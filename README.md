@@ -12,7 +12,7 @@
 ## Projects
 
 ### Day 1
-* [Graph Traversal and Search](projects/graph)
+*[x] [Graph Traversal and Search](projects/graph)
 
 ### Day 2
 * [Random Social Network](projects/social)
