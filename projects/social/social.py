@@ -1,8 +1,15 @@
+from util import Stack, Queue
+import random
+import math
 
 
 class User:
     def __init__(self, name):
         self.name = name
+
+    def __repr__(self):
+        return self.name
+
 
 class SocialGraph:
     def __init__(self):
@@ -10,6 +17,7 @@ class SocialGraph:
         self.users = {}
         self.friendships = {}
 
+    # adding edges/neighbor between two users
     def addFriendship(self, userID, friendID):
         """
         Creates a bi-directional friendship
@@ -22,7 +30,7 @@ class SocialGraph:
             self.friendships[userID].add(friendID)
             self.friendships[friendID].add(userID)
 
-    def addUser(self, name):
+    def addUser(self, name):  # node
         """
         Create a new user with a sequential integer ID
         """
@@ -45,10 +53,31 @@ class SocialGraph:
         self.users = {}
         self.friendships = {}
         # !!!! IMPLEMENT ME
-
-        # Add users
+        # Add users loop
+        for i in range(numUsers):
+            self.addUser(f"User{i+1}")
 
         # Create friendships
+        # avgFriendships = totalFriendships / numUsers
+        # totalFriendships = avgFriendships * numUsers
+        # addFriendship( userID, friendID ):
+        # loop through users and for each key and random friend
+        posibilities = []
+        # looping user object
+        for user in self.users:
+          # 1
+          # 2nd for loop is looping index of users 1-10
+            for friend in range(user + 1, len(self.users) + 1):
+                if user != friend:
+                    posibilities.append((user, friend))
+
+        random.shuffle(posibilities)
+
+        # Time Complexity: O(avgFriendships * numUsers // 2)
+        # Space Complexity: O(avgFriendships * numUsers // 2)
+        for friendship_index in range(avgFriendships * numUsers // 2):
+            friendship = posibilities[friendship_index]
+            self.addFriendship(friendship[0], friendship[1])
 
     def getAllSocialPaths(self, userID):
         """
@@ -59,14 +88,32 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
-        visited = {}  # Note that this is a dictionary, not a set
+        # {1: [1], 8: [1, 8], 10: [1, 10], 5: [1, 5], 2: [1, 10, 2], 6: [1, 10, 6], 7: [1, 10, 2, 7]}
         # !!!! IMPLEMENT ME
+        # create stack
+        # self.users = {}
+        # self.friendships = {}
+        q = Queue()
+        visited = {}
+        q.enqueue([userID])
+        # keep running til empty
+        while q.size() > 0:
+            path = q.dequeue()
+            v = path[-1]
+            if v not in visited:
+                visited[v] = path
+            for friend in self.friendships[v]:
+                if friend not in visited:
+                    path_copy = path.copy()
+                    path_copy.append(friend)
+                    q.enqueue(path_copy)
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
     sg.populateGraph(10, 2)
-    print(sg.friendships)
+    # print(sg.users)
+    # print(sg.friendships)
     connections = sg.getAllSocialPaths(1)
     print(connections)
